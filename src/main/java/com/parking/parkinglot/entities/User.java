@@ -50,7 +50,7 @@ public class User {
         this.password = password;
     }
 
-    @OneToMany(mappedBy = "owner"    )
+    @OneToMany(mappedBy = "owner"     )
     private Collection<Car> cars = new ArrayList<>();
 
     public Collection<Car> getCars() {
