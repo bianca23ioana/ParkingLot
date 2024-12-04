@@ -16,5 +16,6 @@
 <footer class="mt-auto">
     <jsp:include page="/WEB-INF/pages/footer.jsp" />
 </footer>
+    <script src="${pageContext.request.contextPath}/scripts/form-validation.js"></script>
 </body>
 </html>
