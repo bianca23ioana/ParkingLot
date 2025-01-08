@@ -1,5 +1,6 @@
 package com.parking.parkinglot.entities;
 
+
 import jakarta.persistence.*;
 
 @Entity
@@ -46,4 +47,14 @@ public class Car {
   public void setParkingSpot(String parkingSpot) {
     this.parkingSpot = parkingSpot;
   }
+
+  private CarPhoto photo;
+  @OneToOne (mappedBy ="car", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+  public CarPhoto getPhoto(){
+    return photo;
+  }
+  public void setPhoto(CarPhoto photo){
+    this.photo = photo;
+  }
+
 }
