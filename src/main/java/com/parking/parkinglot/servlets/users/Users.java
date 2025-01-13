@@ -1,8 +1,6 @@
-package com.parking.parkinglot;
+package com.parking.parkinglot.servlets.users;
 
-import com.parking.parkinglot.common.CarDto;
 import com.parking.parkinglot.common.UserDto;
-import com.parking.parkinglot.ejb.CarsBean;
 import com.parking.parkinglot.ejb.InvoiceBean;
 import com.parking.parkinglot.ejb.UserBean;
 import jakarta.annotation.security.DeclareRoles;
@@ -16,10 +14,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-@DeclareRoles({"READ_USERS", "WRITE_USERS"})
+@DeclareRoles({"READ_USERS", "WRITE_USERS", "INVOICE"})
 @ServletSecurity(value = @HttpConstraint(rolesAllowed = {"READ_USERS"}),
         httpMethodConstraints = {@HttpMethodConstraint(value = "POST", rolesAllowed =
-                {"WRITE_USERS"})})
+                {"WRITE_USERS", "INVOICE"})})
 
 @WebServlet(name = "Users", value = "/Users")
 public class Users extends HttpServlet {
@@ -29,17 +27,28 @@ public class Users extends HttpServlet {
     InvoiceBean invoiceBean;
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse
-            response) throws ServletException, IOException {
-        List<UserDto> users=usersBean.findAllUsers();
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // Obținem lista tuturor utilizatorilor și o setăm ca atribut
+        List<UserDto> users = usersBean.findAllUsers();
         request.setAttribute("users", users);
 
-        if(!invoiceBean.getUserIds().isEmpty()){
-            Collection<String> usernames=usersBean.findUsernamesByUserIds(invoiceBean.getUserIds());
-            request.setAttribute("invoices",usernames);
+        // Verificăm dacă utilizatorul este în grupul "INVOICING"
+        if (request.isUserInRole("INVOICING")) {
+            // Dacă utilizatorul are acces la facturi și există user IDs
+            if (!invoiceBean.getUserIds().isEmpty()) {
+                // Obținem numele utilizatorilor pe baza user IDs
+                Collection<String> usernames = usersBean.findUsernamesByUserIds(invoiceBean.getUserIds());
+                request.setAttribute("invoices", usernames);
+            }
+        } else {
+            // Dacă utilizatorul nu are rolul "INVOICING", nu setăm datele despre facturi
+            request.setAttribute("invoices", null);
         }
-        request.getRequestDispatcher("/WEB-INF/pages/users.jsp").forward(request,response);
+
+        // Redirectăm către JSP
+        request.getRequestDispatcher("/WEB-INF/pages/users/users.jsp").forward(request, response);
     }
+
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse

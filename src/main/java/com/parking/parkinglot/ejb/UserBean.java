@@ -79,4 +79,13 @@ public class UserBean {
                         .getResultList();
         return usernames;
     }
+
+    public void updateUser(Long userId, String username, String email, String  password) {
+        LOG.info("updateCar");
+
+        User user=entityManager.find(User.class, userId);
+        user.setUsername(username);
+        user.setEmail(email);
+
+    }
 }

@@ -15,6 +15,8 @@ public class User {
     @Column(name = "username")
     private String username;
 
+    @Basic
+    @Column(unique = true, nullable = false, length = 100)
     public String getUsername() {
         return username;
     }
@@ -34,6 +36,8 @@ public class User {
     private String email;
     private String password;
 
+    @Basic
+    @Column(unique = true, nullable = false, length = 100)
     public String getEmail() {
         return email;
     }
